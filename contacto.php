@@ -80,7 +80,7 @@ $anioActual = date("Y");
             transition: color 0.2s;
         }
         nav ul li a:hover { color: var(--brown); }
-
+        nav ul li a.active { color: var(--brown); }
         .btn-reserva {
             padding: 0.6rem 1.4rem;
             background: var(--brown);

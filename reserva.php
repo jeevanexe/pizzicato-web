@@ -524,14 +524,14 @@ $claseIdParam = isset($_GET['clase']) ? intval($_GET['clase']) : 0;
 <script>
 // ── DATA ──
 const clases = [
-    { id:1, nombre:'Piano Clásico',    profesor:'Prof. Ana López',       duracion:60, instrumento:'piano',   imagen:'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=200&q=80', precio:200, horarios:['10:00','12:00','16:00','18:00'] },
-    { id:2, nombre:'Piano Jazz',        profesor:'Prof. Carlos Ramírez',  duracion:60, instrumento:'piano',   imagen:'https://images.unsplash.com/photo-1552422535-c45813c61732?w=200&q=80', precio:200, horarios:['11:00','17:00','19:00'] },
-    { id:3, nombre:'Guitarra Acústica', profesor:'Prof. Miguel Torres',   duracion:50, instrumento:'guitarra',imagen:'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=200&q=80', precio:200, horarios:['09:00','11:00','15:00','17:00'] },
-    { id:4, nombre:'Guitarra Eléctrica',profesor:'Prof. Roberto Sánchez', duracion:50, instrumento:'guitarra',imagen:'https://images.unsplash.com/photo-1564186763535-ebb21ef5277f?w=200&q=80', precio:200, horarios:['10:00','14:00','16:00','18:00'] },
-    { id:5, nombre:'Canto Lírico',      profesor:'Prof. Laura Martínez',  duracion:45, instrumento:'canto',  imagen:'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=200&q=80', precio:200, horarios:['09:00','11:00','15:00'] },
-    { id:6, nombre:'Canto Popular',     profesor:'Prof. Sofia García',    duracion:45, instrumento:'canto',  imagen:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=200&q=80', precio:200, horarios:['10:00','13:00','16:00','18:00'] },
-    { id:7, nombre:'Ukulele para Principiantes', profesor:'Prof. Jhonatan Catalan', duracion:30, nivel:'principiante', instrumento:'ukulele', imagen:'https://volcanovillagelodge.com/ukulele-history-in-hawaiian-culture', precio:600, horarios:['Lunes 14:00','Miércoles 14:00','Viernes 14:00'] },
-    { id:8, nombre:'Ukulele Intermedio',  profesor:'Prof. Jhonatan Catalan', duracion:30, nivel:'intermedio', instrumento:'ukulele', imagen:'https://images.unsplash.com/photo-1508971344143-1c631e9cbbf0?w=600&q=80', precio:600, horarios:['Martes 14:00','Jueves 14:00','Sábado 14:00'] },
+    { id:1, nombre:'Piano Clásico',    profesor:'Prof. Jhonatan Catalan',       duracion:60, instrumento:'piano',   imagen:'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=200&q=80', precio:800, horarios:['10:00','12:00','16:00','18:00'] },
+    { id:2, nombre:'Piano Jazz',        profesor:'Prof. Jhonatan Catalan',  duracion:60, instrumento:'piano',   imagen:'https://images.unsplash.com/photo-1552422535-c45813c61732?w=200&q=80', precio:800, horarios:['11:00','17:00','19:00'] },
+    { id:3, nombre:'Guitarra Acústica', profesor:'Prof. Jhonatan Catalan',   duracion:50, instrumento:'guitarra',imagen:'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=200&q=80', precio:800, horarios:['09:00','11:00','15:00','17:00'] },
+    { id:4, nombre:'Guitarra Eléctrica',profesor:'Prof. Jhonatan Catalan', duracion:50, instrumento:'guitarra',imagen:'https://images.unsplash.com/photo-1564186763535-ebb21ef5277f?w=200&q=80', precio:800, horarios:['10:00','14:00','16:00','18:00'] },
+    { id:5, nombre:'Canto Lírico',      profesor:'Prof. Jhonatan Catalan',  duracion:45, instrumento:'canto',  imagen:'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=200&q=80', precio:800, horarios:['09:00','11:00','15:00'] },
+    { id:6, nombre:'Canto Popular',     profesor:'Prof. Jhonatan Catalan',    duracion:45, instrumento:'canto',  imagen:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=200&q=80', precio:800, horarios:['10:00','13:00','16:00','18:00'] },
+    { id:7, nombre:'Ukulele para Principiantes', profesor:'Prof. Jhonatan Catalan', duracion:30, nivel:'principiante', instrumento:'ukulele', imagen:'https://volcanovillagelodge.com/ukulele-history-in-hawaiian-culture', precio:800, horarios:['Lunes 14:00','Miércoles 14:00','Viernes 14:00'] },
+    { id:8, nombre:'Ukulele Intermedio',  profesor:'Prof. Jhonatan Catalan', duracion:30, nivel:'intermedio', instrumento:'ukulele', imagen:'https://images.unsplash.com/photo-1508971344143-1c631e9cbbf0?w=600&q=80', precio:800, horarios:['Martes 14:00','Jueves 14:00','Sábado 14:00'] },
 
 ];
 
