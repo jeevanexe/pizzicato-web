@@ -414,8 +414,8 @@ $anioActual = date("Y");
             <button class="pill" data-instrument="piano">Piano</button>
             <button class="pill" data-instrument="guitarra">Guitarra</button>
             <button class="pill" data-instrument="canto">Canto</button>
-            <button class="pill" data-instrument="violin">Violín</button>
-            <button class="pill" data-instrument="bateria">Batería</button>
+            <button class="pill" data-instrument="ukulele">Ukulele</button>
+
         </div>
         <div class="level-filter">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -492,8 +492,8 @@ $anioActual = date("Y");
         <div class="footer-col">
             <h4>Contacto</h4>
             <ul>
-                <li>info@pizzicato.mx</li>
-                <li>Av. 4 de Marzo &amp; Rtno. 7, Payo Obispo, 77083, Chetumal, Q.R.</li>
+                <li>estudiopizzicato@gmail.com</li>
+                 <li>Av. 4 de Marzo & Rtno. 7, Payo Obispo, 77083 Chetumal, Q.R.</li>
             </ul>
         </div>
         <div class="footer-col">
@@ -502,7 +502,7 @@ $anioActual = date("Y");
                 <a href="#" aria-label="Instagram">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
                 </a>
-                <a href="#" aria-label="Facebook">
+                <a href="https://www.facebook.com/EDAMPizzicato" aria-label="Facebook">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                 </a>
             </div>
@@ -515,14 +515,14 @@ $anioActual = date("Y");
 
 <script>
 const clases = [
-    { id:1, nombre:'Piano Clásico', descripcion:'Aprende piano desde los fundamentos hasta piezas clásicas complejas. Técnica, teoría y práctica.', profesor:'Prof. Ana López', duracion:60, nivel:'todos', instrumento:'piano', imagen_url:'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=600&q=80', precio:200, horarios:['Lunes 10:00','Miércoles 16:00','Viernes 18:00'] },
-    { id:2, nombre:'Piano Jazz', descripcion:'Improvisación, acordes complejos y técnicas de jazz. Para estudiantes con experiencia previa.', profesor:'Prof. Carlos Ramírez', duracion:60, nivel:'intermedio', instrumento:'piano', imagen_url:'https://images.unsplash.com/photo-1552422535-c45813c61732?w=600&q=80', precio:200, horarios:['Martes 17:00','Jueves 19:00'] },
-    { id:3, nombre:'Guitarra Acústica', descripcion:'Desde acordes básicos hasta técnicas avanzadas de fingerpicking. Repertorio variado.', profesor:'Prof. Miguel Torres', duracion:50, nivel:'principiante', instrumento:'guitarra', imagen_url:'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=600&q=80', precio:200, horarios:['Lunes 15:00','Miércoles 17:00','Sábado 10:00'] },
-    { id:4, nombre:'Guitarra Eléctrica', descripcion:'Rock, blues, metal y más. Técnicas de solo, riffs y uso de efectos.', profesor:'Prof. Roberto Sánchez', duracion:50, nivel:'intermedio', instrumento:'guitarra', imagen_url:'https://images.unsplash.com/photo-1564186763535-ebb21ef5277f?w=600&q=80', precio:200, horarios:['Martes 16:00','Jueves 18:00','Sábado 14:00'] },
-    { id:5, nombre:'Canto Lírico', descripcion:'Técnica vocal clásica, respiración, proyección y repertorio operístico.', profesor:'Prof. Laura Martínez', duracion:45, nivel:'todos', instrumento:'canto', imagen_url:'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=600&q=80', precio:200, horarios:['Lunes 11:00','Miércoles 15:00','Viernes 17:00'] },
-    { id:6, nombre:'Canto Popular', descripcion:'Pop, rock, jazz. Técnica moderna, micrófono y expresión escénica.', profesor:'Prof. Sofia García', duracion:45, nivel:'todos', instrumento:'canto', imagen_url:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80', precio:200, horarios:['Martes 10:00','Jueves 16:00','Sábado 11:00'] },
-    { id:7, nombre:'Violín Clásico', descripcion:'Postura, arco, afinación y repertorio clásico. Desde cero hasta nivel avanzado.', profesor:'Prof. Elena Rodríguez', duracion:60, nivel:'todos', instrumento:'violin', imagen_url:'https://images.unsplash.com/photo-1612225330812-01a9c6b355ec?w=600&q=80', precio:200, horarios:['Lunes 14:00','Miércoles 18:00','Viernes 16:00'] },
-    { id:8, nombre:'Batería Rock', descripcion:'Ritmos, coordinación, fills y técnicas de rock, pop y funk.', profesor:'Prof. David Morales', duracion:50, nivel:'principiante', instrumento:'bateria', imagen_url:'https://images.unsplash.com/photo-1571327073757-71d13c24de30?w=600&q=80', precio:200, horarios:['Martes 15:00','Jueves 17:00','Sábado 12:00'] }
+    { id:1, nombre:'Piano Clásico', descripcion:'Aprende piano desde los fundamentos hasta piezas clásicas complejas. Técnica, teoría y práctica.', profesor:'Prof. Jhonatan Catalan', duracion:60, nivel:'todos', instrumento:'piano', imagen_url:'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=600&q=80', precio:800, horarios:['Lunes 10:00','Miércoles 16:00','Viernes 18:00'] },
+    { id:2, nombre:'Piano Jazz', descripcion:'Improvisación, acordes complejos y técnicas de jazz. Para estudiantes con experiencia previa.', profesor:'Prof. Jhonatan Catalan', duracion:60, nivel:'intermedio', instrumento:'piano', imagen_url:'https://images.unsplash.com/photo-1552422535-c45813c61732?w=600&q=80', precio:800, horarios:['Martes 17:00','Jueves 19:00'] },
+    { id:3, nombre:'Guitarra Acústica', descripcion:'Desde acordes básicos hasta técnicas avanzadas de fingerpicking. Repertorio variado.', profesor:'Prof. Jhonatan Catalan', duracion:50, nivel:'principiante', instrumento:'guitarra', imagen_url:'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=600&q=80', precio:800, horarios:['Lunes 15:00','Miércoles 17:00','Sábado 10:00'] },
+    { id:4, nombre:'Guitarra Eléctrica', descripcion:'Rock, blues, metal y más. Técnicas de solo, riffs y uso de efectos.', profesor:'Prof. Jhonatan Catalan', duracion:50, nivel:'intermedio', instrumento:'guitarra', imagen_url:'https://images.unsplash.com/photo-1564186763535-ebb21ef5277f?w=600&q=80', precio:800, horarios:['Martes 16:00','Jueves 18:00','Sábado 14:00'] },
+    { id:5, nombre:'Canto Lírico', descripcion:'Técnica vocal clásica, respiración, proyección y repertorio operístico.', profesor:'Prof. Jhonatan Catalan', duracion:45, nivel:'todos', instrumento:'canto', imagen_url:'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=600&q=80', precio:800, horarios:['Lunes 11:00','Miércoles 15:00','Viernes 17:00'] },
+    { id:6, nombre:'Canto Popular', descripcion:'Pop, rock, jazz. Técnica moderna, micrófono y expresión escénica.', profesor:'Prof. Jhonatan Catalan', duracion:45, nivel:'todos', instrumento:'canto', imagen_url:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80', precio:800, horarios:['Martes 10:00','Jueves 16:00','Sábado 11:00'] },
+    { id:7, nombre:'Ukulele para Principiantes', descripcion:'Aprende a tocar el ukulele desde cero. Acordes básicos, rasgueos y canciones sencillas.', profesor:'Prof. Jhonatan Catalan', duracion:30, nivel:'principiante', instrumento:'ukulele', imagen_url:'https://volcanovillagelodge.com/ukulele-history-in-hawaiian-culture', precio:600, horarios:['Lunes 14:00','Miércoles 14:00','Viernes 14:00'] },
+    { id:8, nombre:'Ukulele Intermedio', descripcion:'Técnicas avanzadas de rasgueo, fingerpicking y repertorio más desafiante.', profesor:'Prof. Jhonatan Catalan', duracion:30, nivel:'intermedio', instrumento:'ukulele', imagen_url:'https://images.unsplash.com/photo-1508971344143-1c631e9cbbf0?w=600&q=80', precio:600, horarios:['Martes 14:00','Jueves 14:00','Sábado 14:00'] }
 ];
 
 const levelLabels = { principiante:'Principiante', intermedio:'Intermedio', avanzado:'Avanzado', todos:'Todos los niveles' };

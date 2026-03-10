@@ -363,10 +363,10 @@ $anioActual = date("Y");
             <li><a href="home.php">Inicio</a></li>
             <li><a href="clases.php">Clases</a></li>
             <li><a href="eventos.php">Eventos</a></li>
-            <li><a href="contacto.php">Contacto</a></li>
+            <li><a href="contacto.php" class="active">Contacto</a></li>
         </ul>
     </nav>
-    <a href="#" class="btn-reserva">RESERVAR CLASE</a>
+    <a href="clases.php" class="btn-reserva">RESERVAR CLASE</a>
 </header>
 
 <!-- HERO -->
@@ -385,21 +385,21 @@ $anioActual = date("Y");
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                     </div>
                     <h3>Ubicación</h3>
-                    <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer">Calle Ejemplo 123, 28001 Madrid</a>
+                    <a href="https://maps.app.goo.gl/8h5wXf7QB4uh3wfJ9" target="_blank" rel="noopener noreferrer">Av. 4 de Marzo & Rtno. 7, Payo Obispo, 77083 Chetumal, Q.R.</a>
                 </div>
                 <div class="info-card">
                     <div class="info-icon">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                     </div>
                     <h3>Teléfono</h3>
-                    <a href="tel:+34612345678">+34 612 345 678</a>
+                    <a href="tel:+529831234567">+52 983 123 4567</a>
                 </div>
                 <div class="info-card">
                     <div class="info-icon">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                     </div>
                     <h3>Email</h3>
-                    <a href="mailto:hola@pizzicato.es">hola@pizzicato.es</a>
+                    <a href="mailto:info@pizzicato.mx">info@pizzicato.mx</a>
                 </div>
                 <div class="info-card">
                     <div class="info-icon">
@@ -440,7 +440,7 @@ Sáb - Dom: 9:00 - 14:00</p>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="telefono">Teléfono</label>
-                            <input type="tel" id="telefono" placeholder="+34 600 000 000">
+                            <input type="tel" id="telefono" placeholder="+52 983 123 4567">
                         </div>
                         <div class="form-group">
                             <label for="asunto">Asunto</label>
