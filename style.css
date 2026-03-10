@@ -5,6 +5,9 @@
             --text-dark: #333;
             --text-light: #fff;
             --footer-bg: #2d2d2d;
+            --badge-blue: #3B82F6;
+            --badge-green: #10B981;
+            --white: #FFFFFF;
         }
  
         * {
