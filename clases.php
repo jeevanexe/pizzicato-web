@@ -185,6 +185,34 @@ $anioActual = date("Y");
             gap: 2rem;
         }
 
+        /* ── SKELETON LOADER ── */
+        .skeleton-card {
+            background: white;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .skeleton-img {
+            aspect-ratio: 16/10;
+            background: linear-gradient(90deg, var(--light) 25%, #efe0cc 50%, var(--light) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-body { padding: 1.5rem; }
+        .skeleton-line {
+            height: 0.85rem;
+            border-radius: 9999px;
+            background: linear-gradient(90deg, var(--light) 25%, #efe0cc 50%, var(--light) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            margin-bottom: 0.75rem;
+        }
+        .skeleton-line.short  { width: 40%; }
+        .skeleton-line.medium { width: 65%; }
+        .skeleton-line.long   { width: 90%; }
+        .skeleton-line.title  { height: 1.2rem; width: 75%; margin-bottom: 1rem; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
         /* ── CARD ── */
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -201,14 +229,6 @@ $anioActual = date("Y");
             box-shadow: 0 20px 50px rgba(0,0,0,0.12);
             transform: translateY(-4px);
         }
-        .card:nth-child(1) { animation-delay: 0s; }
-        .card:nth-child(2) { animation-delay: 0.05s; }
-        .card:nth-child(3) { animation-delay: 0.1s; }
-        .card:nth-child(4) { animation-delay: 0.15s; }
-        .card:nth-child(5) { animation-delay: 0.2s; }
-        .card:nth-child(6) { animation-delay: 0.25s; }
-        .card:nth-child(7) { animation-delay: 0.3s; }
-        .card:nth-child(8) { animation-delay: 0.35s; }
 
         .card-img-wrap { aspect-ratio: 16/10; overflow: hidden; position: relative; }
         .card-img-wrap img {
@@ -227,7 +247,7 @@ $anioActual = date("Y");
             font-weight: 500;
             color: white;
         }
-        .badge-todos       { background: var(--brown); }
+        .badge-todos        { background: var(--brown); }
         .badge-principiante { background: #22c55e; }
         .badge-intermedio   { background: #3b82f6; }
         .badge-avanzado     { background: #a855f7; }
@@ -278,6 +298,32 @@ $anioActual = date("Y");
             transition: gap 0.2s ease;
         }
         .card-link:hover { gap: 0.75rem; }
+
+        /* ── ERROR ── */
+        .error-banner {
+            display: none;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 0.75rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            color: #dc2626;
+            font-size: 0.9rem;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .error-banner.show { display: flex; }
+        .error-banner button {
+            margin-left: auto;
+            background: var(--brown);
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            padding: 0.4rem 1rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+        }
 
         /* ── EMPTY ── */
         .empty { text-align: center; padding: 5rem 2rem; display: none; }
@@ -410,12 +456,8 @@ $anioActual = date("Y");
 <section class="filters">
     <div class="filters-inner">
         <div class="instrument-pills" id="instrumentPills">
+            <!-- Se populan dinámicamente desde la API -->
             <button class="pill active" data-instrument="todos">Todos</button>
-            <button class="pill" data-instrument="piano">Piano</button>
-            <button class="pill" data-instrument="guitarra">Guitarra</button>
-            <button class="pill" data-instrument="canto">Canto</button>
-            <button class="pill" data-instrument="ukulele">Ukulele</button>
-
         </div>
         <div class="level-filter">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -434,6 +476,11 @@ $anioActual = date("Y");
 <!-- GRID -->
 <section class="grid-section">
     <div class="grid-inner">
+        <div class="error-banner" id="errorBanner">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="errorMsg">No se pudieron cargar las clases.</span>
+            <button onclick="cargarClases()">Reintentar</button>
+        </div>
         <div class="cards-grid" id="cardsGrid"></div>
         <div class="empty" id="emptyState">
             <p>No hay clases disponibles con estos filtros.</p>
@@ -493,7 +540,7 @@ $anioActual = date("Y");
             <h4>Contacto</h4>
             <ul>
                 <li>estudiopizzicato@gmail.com</li>
-                 <li>Av. 4 de Marzo & Rtno. 7, Payo Obispo, 77083 Chetumal, Q.R.</li>
+                <li>Av. 4 de Marzo & Rtno. 7, Payo Obispo, 77083 Chetumal, Q.R.</li>
             </ul>
         </div>
         <div class="footer-col">
@@ -514,70 +561,160 @@ $anioActual = date("Y");
 </footer>
 
 <script>
-const clases = [
-    { id:1, nombre:'Piano Clásico', descripcion:'Aprende piano desde los fundamentos hasta piezas clásicas complejas. Técnica, teoría y práctica.', profesor:'Prof. Jhonatan Catalan', duracion:60, nivel:'todos', instrumento:'piano', imagen_url:'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=600&q=80', precio:800, horarios:['Lunes 10:00','Miércoles 16:00','Viernes 18:00'] },
-    { id:2, nombre:'Piano Jazz', descripcion:'Improvisación, acordes complejos y técnicas de jazz. Para estudiantes con experiencia previa.', profesor:'Prof. Jhonatan Catalan', duracion:60, nivel:'intermedio', instrumento:'piano', imagen_url:'https://images.unsplash.com/photo-1552422535-c45813c61732?w=600&q=80', precio:800, horarios:['Martes 17:00','Jueves 19:00'] },
-    { id:3, nombre:'Guitarra Acústica', descripcion:'Desde acordes básicos hasta técnicas avanzadas de fingerpicking. Repertorio variado.', profesor:'Prof. Jhonatan Catalan', duracion:50, nivel:'principiante', instrumento:'guitarra', imagen_url:'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=600&q=80', precio:800, horarios:['Lunes 15:00','Miércoles 17:00','Sábado 10:00'] },
-    { id:4, nombre:'Guitarra Eléctrica', descripcion:'Rock, blues, metal y más. Técnicas de solo, riffs y uso de efectos.', profesor:'Prof. Jhonatan Catalan', duracion:50, nivel:'intermedio', instrumento:'guitarra', imagen_url:'https://images.unsplash.com/photo-1564186763535-ebb21ef5277f?w=600&q=80', precio:800, horarios:['Martes 16:00','Jueves 18:00','Sábado 14:00'] },
-    { id:5, nombre:'Canto Lírico', descripcion:'Técnica vocal clásica, respiración, proyección y repertorio operístico.', profesor:'Prof. Jhonatan Catalan', duracion:45, nivel:'todos', instrumento:'canto', imagen_url:'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=600&q=80', precio:800, horarios:['Lunes 11:00','Miércoles 15:00','Viernes 17:00'] },
-    { id:6, nombre:'Canto Popular', descripcion:'Pop, rock, jazz. Técnica moderna, micrófono y expresión escénica.', profesor:'Prof. Jhonatan Catalan', duracion:45, nivel:'todos', instrumento:'canto', imagen_url:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80', precio:800, horarios:['Martes 10:00','Jueves 16:00','Sábado 11:00'] },
-    { id:7, nombre:'Ukulele para Principiantes', descripcion:'Aprende a tocar el ukulele desde cero. Acordes básicos, rasgueos y canciones sencillas.', profesor:'Prof. Jhonatan Catalan', duracion:30, nivel:'principiante', instrumento:'ukulele', imagen_url:'https://volcanovillagelodge.com/ukulele-history-in-hawaiian-culture', precio:600, horarios:['Lunes 14:00','Miércoles 14:00','Viernes 14:00'] },
-    { id:8, nombre:'Ukulele Intermedio', descripcion:'Técnicas avanzadas de rasgueo, fingerpicking y repertorio más desafiante.', profesor:'Prof. Jhonatan Catalan', duracion:30, nivel:'intermedio', instrumento:'ukulele', imagen_url:'https://images.unsplash.com/photo-1508971344143-1c631e9cbbf0?w=600&q=80', precio:600, horarios:['Martes 14:00','Jueves 14:00','Sábado 14:00'] }
-];
+// ── Configuración ─────────────────────────────────────────
+const API_URL = 'api/clases.php';
 
-const levelLabels = { principiante:'Principiante', intermedio:'Intermedio', avanzado:'Avanzado', todos:'Todos los niveles' };
-const clockSVG = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
-const arrowSVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
-const musicSVG = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`;
-
+// ── Estado ────────────────────────────────────────────────
+let todasLasClases   = [];
 let activeInstrumento = 'todos';
-let activeLevel = 'todos';
+let activeLevel       = 'todos';
 
+// ── SVG helpers ───────────────────────────────────────────
+const clockSVG  = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+const arrowSVG  = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
+const musicSVG  = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`;
+
+const levelLabels = {
+    principiante: 'Principiante',
+    intermedio:   'Intermedio',
+    avanzado:     'Avanzado',
+    todos:        'Todos los niveles'
+};
+
+// ── Capitalizar ───────────────────────────────────────────
+function cap(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// ── Formatear horario desde la API ────────────────────────
+// La API devuelve { dia_semana: "lunes", hora: "10:00:00" }
+// Mostramos: "Lunes 10:00"
+function formatHorario(h) {
+    const hora = h.hora ? h.hora.substring(0, 5) : '';
+    return `${cap(h.dia_semana)} ${hora}`;
+}
+
+// ── Skeleton loaders ──────────────────────────────────────
+function mostrarSkeletons(n = 6) {
+    const grid = document.getElementById('cardsGrid');
+    grid.style.display = 'grid';
+    grid.innerHTML = Array.from({ length: n }, () => `
+        <div class="skeleton-card">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-body">
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line title"></div>
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line medium"></div>
+            </div>
+        </div>`).join('');
+}
+
+// ── Cargar clases desde la API ────────────────────────────
+async function cargarClases() {
+    const errorBanner = document.getElementById('errorBanner');
+    errorBanner.classList.remove('show');
+    mostrarSkeletons();
+
+    try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        if (data.error) throw new Error(data.error);
+
+        todasLasClases = data;
+        construirPills();
+        render();
+    } catch (err) {
+        console.error('Error cargando clases:', err);
+        document.getElementById('cardsGrid').innerHTML = '';
+        document.getElementById('cardsGrid').style.display = 'none';
+        document.getElementById('errorMsg').textContent =
+            'No se pudieron cargar las clases. Verifica tu conexión.';
+        errorBanner.classList.add('show');
+    }
+}
+
+// ── Construir pills de instrumentos dinámicamente ─────────
+function construirPills() {
+    const instrumentos = [...new Set(
+        todasLasClases
+            .map(c => c.instrumento)
+            .filter(Boolean)
+    )].sort();
+
+    const container = document.getElementById('instrumentPills');
+    container.innerHTML = `<button class="pill active" data-instrument="todos">Todos</button>`;
+
+    instrumentos.forEach(inst => {
+        const btn = document.createElement('button');
+        btn.className = 'pill';
+        btn.dataset.instrument = inst;
+        btn.textContent = cap(inst);
+        container.appendChild(btn);
+    });
+}
+
+// ── Renderizar tarjetas ───────────────────────────────────
 function render() {
     const grid  = document.getElementById('cardsGrid');
     const empty = document.getElementById('emptyState');
-    const filtered = clases.filter(c => {
+
+    const filtered = todasLasClases.filter(c => {
         const iMatch = activeInstrumento === 'todos' || c.instrumento === activeInstrumento;
         const lMatch = activeLevel === 'todos' || c.nivel === activeLevel || c.nivel === 'todos';
-        return iMatch && lMatch;
+        return iMatch && lMatch && c.estado === 'activa';
     });
 
     grid.innerHTML = '';
+
     if (filtered.length === 0) {
         grid.style.display = 'none';
         empty.style.display = 'block';
         return;
     }
+
     grid.style.display = 'grid';
     empty.style.display = 'none';
 
     filtered.forEach((clase, i) => {
-        const shown = clase.horarios.slice(0, 2);
-        const extra = clase.horarios.length - 2;
+        const horarios = Array.isArray(clase.horarios) ? clase.horarios : [];
+        const shown = horarios.slice(0, 2);
+        const extra = horarios.length - 2;
+
+        const imgSrc = clase.imagen_url
+            ? clase.imagen_url
+            : `https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=600&q=80`;
+
         const card = document.createElement('div');
         card.className = 'card';
         card.style.animationDelay = `${i * 0.05}s`;
         card.innerHTML = `
             <div class="card-img-wrap">
-                <img src="${clase.imagen_url}" alt="${clase.nombre}" loading="lazy">
-                <span class="badge badge-${clase.nivel}">${levelLabels[clase.nivel]}</span>
+                <img src="${imgSrc}" alt="${clase.nombre}" loading="lazy"
+                     onerror="this.src='https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=600&q=80'">
+                <span class="badge badge-${clase.nivel}">${levelLabels[clase.nivel] ?? cap(clase.nivel)}</span>
             </div>
             <div class="card-body">
                 <div class="card-meta">
                     ${musicSVG}
-                    <span style="text-transform:capitalize">${clase.instrumento}</span>
+                    <span>${cap(clase.instrumento)}</span>
                     <span class="dot"></span>
-                    <span>${clase.profesor}</span>
+                    <span>${clase.profesor ?? ''}</span>
                 </div>
                 <h3 class="card-title">${clase.nombre}</h3>
-                <p class="card-desc">${clase.descripcion}</p>
-                <div class="horarios-label">Horarios</div>
-                ${shown.map(h => `<div class="horario-item">${clockSVG} ${h}</div>`).join('')}
-                ${extra > 0 ? `<div class="more-horarios">+${extra} más</div>` : ''}
+                <p class="card-desc">${clase.descripcion ?? ''}</p>
+                ${horarios.length > 0 ? `
+                    <div class="horarios-label">Horarios</div>
+                    ${shown.map(h => `<div class="horario-item">${clockSVG} ${formatHorario(h)}</div>`).join('')}
+                    ${extra > 0 ? `<div class="more-horarios">+${extra} más</div>` : ''}
+                ` : ''}
                 <div class="card-footer">
                     <div class="card-footer-left">
-                        <div style="display:flex;align-items:center;gap:4px">${clockSVG} <span>${clase.duracion} min</span></div>
-                        <span class="card-price">$${clase.precio}</span>
+                        <div style="display:flex;align-items:center;gap:4px">${clockSVG} <span>${clase.duracion ?? 60} min</span></div>
+                        <span class="card-price">$${Number(clase.precio ?? 0).toLocaleString('es-MX')}</span>
                     </div>
                     <a href="reserva.php?clase=${clase.id}" class="card-link">Reservar ${arrowSVG}</a>
                 </div>
@@ -586,18 +723,22 @@ function render() {
     });
 }
 
+// ── Limpiar filtros ───────────────────────────────────────
 function clearFilters() {
     activeInstrumento = 'todos';
     activeLevel = 'todos';
     document.getElementById('levelSelect').value = 'todos';
-    document.querySelectorAll('.pill').forEach(p => p.classList.toggle('active', p.dataset.instrument === 'todos'));
+    document.querySelectorAll('.pill').forEach(p =>
+        p.classList.toggle('active', p.dataset.instrument === 'todos'));
     render();
 }
 
+// ── Eventos ───────────────────────────────────────────────
 document.getElementById('instrumentPills').addEventListener('click', e => {
-    if (!e.target.classList.contains('pill')) return;
-    activeInstrumento = e.target.dataset.instrument;
-    document.querySelectorAll('.pill').forEach(p => p.classList.toggle('active', p === e.target));
+    const pill = e.target.closest('.pill');
+    if (!pill) return;
+    activeInstrumento = pill.dataset.instrument;
+    document.querySelectorAll('.pill').forEach(p => p.classList.toggle('active', p === pill));
     render();
 });
 
@@ -606,7 +747,8 @@ document.getElementById('levelSelect').addEventListener('change', e => {
     render();
 });
 
-render();
+// ── Inicio ────────────────────────────────────────────────
+cargarClases();
 </script>
 </body>
 </html>
