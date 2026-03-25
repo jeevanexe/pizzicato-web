@@ -392,7 +392,7 @@ $anioActual = date("Y");
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                     </div>
                     <h3>Teléfono</h3>
-                    <a href="tel:+529831234567">+52 983 123 4567</a>
+                    <a href="tel:+529831234567">+52 --- --- ----</a>
                 </div>
                 <div class="info-card">
                     <div class="info-icon">
@@ -524,11 +524,42 @@ const resetBtn    = document.getElementById('resetBtn');
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    const nombre  = document.getElementById('nombre').value.trim();
+    const email   = document.getElementById('email').value.trim();
+    const mensaje = document.getElementById('mensaje').value.trim();
+
+    if (!nombre || !email || !mensaje) {
+        alert('Por favor completa los campos obligatorios.');
+        return;
+    }
+
     submitBtn.disabled = true;
     submitBtn.innerHTML = `<div class="spinner"></div> Enviando...`;
-    await new Promise(r => setTimeout(r, 1500));
-    formCard.style.display = 'none';
-    successCard.style.display = 'block';
+
+    try {
+        const res  = await fetch('api/contacto.php', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                nombre,
+                correo:   email,
+                telefono: document.getElementById('telefono').value.trim(),
+                asunto:   document.getElementById('asunto').value.trim(),
+                mensaje,
+            }),
+        });
+        const data = await res.json();
+        if (!res.ok || data.error) throw new Error(data.error || 'Error al enviar');
+
+        formCard.style.display    = 'none';
+        successCard.style.display = 'block';
+
+    } catch (err) {
+        alert('No se pudo enviar el mensaje: ' + err.message);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar mensaje`;
+    }
 });
 
 resetBtn.addEventListener('click', () => {

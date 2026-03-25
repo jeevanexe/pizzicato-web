@@ -26,6 +26,8 @@ try {
                 r.fecha,
                 r.estado,
                 r.notas,
+                r.nivel_musical,        
+                r.tiene_instrumento,    
                 r.created_at,
                 u.nombre    AS alumno_nombre,
                 u.apellido  AS alumno_apellido,
@@ -84,8 +86,8 @@ try {
 
         // Crear la reserva
         $stmt = $pdo->prepare('
-            INSERT INTO reservas (usuario_id, clase_id, horario_id, fecha, notas)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO reservas (usuario_id, clase_id, horario_id, fecha, notas, nivel_musical, tiene_instrumento)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         ');
         $stmt->execute([
             $usuarioId,
@@ -93,6 +95,8 @@ try {
             intval($datos['horario_id']),
             $datos['fecha'],
             $datos['notas'] ?? '',
+            $datos['nivel_musical'] ?? '',
+            $datos['tiene_instrumento'] ?? '',
         ]);
         $reservaId = $pdo->lastInsertId();
 

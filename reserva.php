@@ -94,18 +94,30 @@ $claseIdParam = isset($_GET['clase']) ? intval($_GET['clase']) : 0;
         .cal-nav:hover { color: var(--brown); }
         .cal-days-header { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.7rem; color: rgba(45,36,36,0.4); margin-bottom: 0.5rem; }
         .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; border-radius: 50%; cursor: pointer; transition: all 0.15s; color: rgba(45,36,36,0.7); }
+        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; border-radius: 50%; cursor: pointer; transition: all 0.15s; color: rgba(45,36,36,0.7); position: relative; }
         .cal-day.empty, .cal-day.past, .cal-day.unavailable { pointer-events: none; }
         .cal-day.past, .cal-day.unavailable { color: rgba(45,36,36,0.2); }
         .cal-day:not(.empty):not(.past):not(.unavailable):hover { background: var(--light); }
         .cal-day.selected { background: var(--brown); color: white; }
         .cal-day.today { font-weight: 700; }
+        /* Punto naranja para días con fecha extra */
+        .cal-day.extra::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--brown); }
+        .cal-day.selected.extra::after { background: white; }
+
+        .cal-legend { display: flex; gap: 1rem; margin-top: 0.75rem; flex-wrap: wrap; }
+        .cal-legend-item { display: flex; align-items: center; gap: 0.35rem; font-size: 0.7rem; color: rgba(45,36,36,0.5); }
+        .cal-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .cal-legend-dot.recurrente { background: var(--light); border: 1px solid rgba(45,36,36,0.2); }
+        .cal-legend-dot.extra { background: var(--brown); }
+
         .horarios-wrap { background: white; border-radius: 1rem; padding: 1.5rem; }
         .horarios-wrap h4 { font-family: 'Playfair Display', serif; font-size: 1rem; margin-bottom: 1rem; }
         .horario-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
         .slot { padding: 0.6rem 0.75rem; border-radius: 0.6rem; border: 1px solid var(--light); background: white; font-size: 0.85rem; cursor: pointer; text-align: center; transition: all 0.2s; color: var(--dark); font-family: 'DM Sans', sans-serif; }
         .slot:hover { border-color: var(--brown); color: var(--brown); }
         .slot.selected { background: var(--brown); border-color: var(--brown); color: white; }
+        .slot.extra-slot { border-color: rgba(139,69,19,0.3); background: rgba(255,248,240,0.8); }
+        .slot.extra-slot.selected { background: var(--brown); border-color: var(--brown); color: white; }
         .no-date-msg { color: rgba(45,36,36,0.4); font-size: 0.875rem; text-align: center; padding: 2rem 0; }
 
         /* ── STEP 3 ── */
@@ -236,6 +248,10 @@ $claseIdParam = isset($_GET['clase']) ? intval($_GET['clase']) : 0;
                 </div>
                 <div class="cal-days-header"><span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sá</span><span>Do</span></div>
                 <div class="cal-days" id="calDays"></div>
+                <div class="cal-legend">
+                    <div class="cal-legend-item"><div class="cal-legend-dot recurrente"></div> Días regulares</div>
+                    <div class="cal-legend-item"><div class="cal-legend-dot extra"></div> Fecha especial</div>
+                </div>
             </div>
             <div class="horarios-wrap">
                 <h4 id="horariosTitle">Horarios disponibles</h4>
@@ -255,11 +271,20 @@ $claseIdParam = isset($_GET['clase']) ? intval($_GET['clase']) : 0;
             <div class="form-group"><label>Teléfono</label><input type="tel" id="fTelefono" placeholder="+52 999 000 0000" /></div>
             <div class="form-group">
                 <label>Nivel musical</label>
-                <select id="fNivel"><option value="">Selecciona tu nivel</option><option value="principiante">Principiante</option><option value="intermedio">Intermedio</option><option value="avanzado">Avanzado</option></select>
+                <select id="fNivel">
+                    <option value="">Selecciona tu nivel</option>
+                    <option value="Principiante">Principiante</option>
+                    <option value="Intermedio">Intermedio</option>
+                    <option value="Avanzado">Avanzado</option>
+                </select>
             </div>
             <div class="form-group">
                 <label>¿Tienes instrumento propio?</label>
-                <select id="fInstrumento"><option value="">Selecciona una opción</option><option value="si">Sí, tengo mi propio instrumento</option><option value="no">No, necesito uno del estudio</option></select>
+                <select id="fInstrumento">
+                    <option value="">Selecciona una opción</option>
+                    <option value="Sí, tengo mi propio instrumento">Sí, tengo mi propio instrumento</option>
+                    <option value="No, necesito uno del estudio">No, necesito uno del estudio</option>
+                </select>
             </div>
             <div class="form-group full"><label>Notas adicionales (opcional)</label><textarea id="fNotas" placeholder="Cuéntanos algo sobre tu experiencia musical o cualquier necesidad especial..."></textarea></div>
         </div>
@@ -337,16 +362,15 @@ const API_RESERVAS = 'api/reservas.php';
 // ══════════════════════════════════════════════════════
 let todasLasClases  = [];
 let currentStep     = 1;
-let selectedClaseId = <?= $claseIdParam ?: 0 ?>;   // pre-selección por ?clase=X
+let selectedClaseId = <?= $claseIdParam ?: 0 ?>;
 let selectedDate    = null;
-let selectedHorario = null;   // { id, dia_semana, hora } de la API
+let selectedHorario = null;  // { id, dia_semana|fecha, hora, esEspecifico }
 let calYear, calMonth;
 
 const today = new Date();
 calYear  = today.getFullYear();
 calMonth = today.getMonth();
 
-// Mapeo día en español → número JS (getDay(): 0=domingo)
 const diasSemanaMap = {
     lunes:1, martes:2, miercoles:3, jueves:4, viernes:5, sabado:6, domingo:0
 };
@@ -359,15 +383,57 @@ const arrowSVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" st
 function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
 function claseActual() { return todasLasClases.find(c => c.id === selectedClaseId) || null; }
 
-// Días de la semana (JS index) en que hay horario para la clase seleccionada
-function diasConHorario() {
-    const clase = claseActual();
-    if (!clase?.horarios) return new Set();
-    return new Set(clase.horarios.map(h => diasSemanaMap[h.dia_semana]));
+// Formatea fecha JS a YYYY-MM-DD sin problemas de zona horaria
+function fechaStr(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
 }
 
 // ══════════════════════════════════════════════════════
-//  STEP 1 — CLASES (GET api/clases.php)
+//  LÓGICA DE DISPONIBILIDAD (recurrentes + específicos)
+// ══════════════════════════════════════════════════════
+function getDisponibilidad() {
+    const clase = claseActual();
+    if (!clase) return { recurrentes: new Set(), bloqueados: new Set(), extras: new Set() };
+
+    // Días de semana recurrentes (índice JS)
+    const recurrentes = new Set((clase.horarios ?? []).map(h => diasSemanaMap[h.dia_semana]));
+
+    // Fechas específicas
+    const bloqueados = new Set();
+    const extras     = new Set();
+    (clase.horarios_especificos ?? []).forEach(e => {
+        if (e.tipo === 'bloqueado') bloqueados.add(e.fecha);
+        if (e.tipo === 'extra')     extras.add(e.fecha);
+    });
+
+    return { recurrentes, bloqueados, extras };
+}
+
+// ¿Tiene slots disponibles este día?
+function diaDisponible(date) {
+    const { recurrentes, bloqueados, extras } = getDisponibilidad();
+    const fStr  = fechaStr(date);
+    const jsDow = date.getDay();
+    const esBloqueado  = bloqueados.has(fStr);
+    const esExtra      = extras.has(fStr);
+    const esRecurrente = recurrentes.has(jsDow);
+    return (esRecurrente && !esBloqueado) || esExtra;
+}
+
+// ¿Es fecha extra (no recurrente)?
+function esExtra(date) {
+    const { recurrentes, bloqueados, extras } = getDisponibilidad();
+    const fStr  = fechaStr(date);
+    const jsDow = date.getDay();
+    const soloExtra = extras.has(fStr) && (!recurrentes.has(jsDow) || bloqueados.has(fStr));
+    return soloExtra;
+}
+
+// ══════════════════════════════════════════════════════
+//  STEP 1 — CLASES
 // ══════════════════════════════════════════════════════
 async function cargarClases() {
     try {
@@ -428,7 +494,6 @@ function renderCalendar() {
     const offset      = firstDay === 0 ? 6 : firstDay - 1;
     const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
     const container   = document.getElementById('calDays');
-    const disponibles = diasConHorario();
     container.innerHTML = '';
 
     for (let i = 0; i < offset; i++) {
@@ -436,19 +501,23 @@ function renderCalendar() {
         el.className = 'cal-day empty';
         container.appendChild(el);
     }
+
     for (let d = 1; d <= daysInMonth; d++) {
         const date    = new Date(calYear, calMonth, d);
-        const jsDow   = date.getDay();
         const isPast  = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
         const isToday = date.toDateString() === today.toDateString();
-        const hasSlots = disponibles.has(jsDow);
+        const hasSlots = diaDisponible(date);
+        const esDiaExtra = esExtra(date);
+
         const el = document.createElement('div');
         el.textContent = d;
         el.className   = 'cal-day';
         if (isToday)  el.classList.add('today');
         if (isPast)   el.classList.add('past');
         if (!isPast && !hasSlots) el.classList.add('unavailable');
+        if (!isPast && hasSlots && esDiaExtra) el.classList.add('extra');
         if (selectedDate && date.toDateString() === selectedDate.toDateString()) el.classList.add('selected');
+
         if (!isPast && hasSlots) {
             el.addEventListener('click', () => {
                 selectedDate    = date;
@@ -462,64 +531,104 @@ function renderCalendar() {
     }
 }
 
-document.getElementById('calPrev').addEventListener('click', () => { calMonth--; if (calMonth < 0) { calMonth=11; calYear--; } renderCalendar(); });
-document.getElementById('calNext').addEventListener('click', () => { calMonth++; if (calMonth > 11) { calMonth=0; calYear++; } renderCalendar(); });
+document.getElementById('calPrev').addEventListener('click', () => {
+    calMonth--;
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    renderCalendar();
+});
+document.getElementById('calNext').addEventListener('click', () => {
+    calMonth++;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    renderCalendar();
+});
 
+// ══════════════════════════════════════════════════════
+//  STEP 2 — HORARIOS (recurrentes + específicos del día)
+// ══════════════════════════════════════════════════════
 function renderHorarios() {
     const container = document.getElementById('horariosContainer');
     const title     = document.getElementById('horariosTitle');
+
     if (!selectedDate) {
         title.textContent = 'Horarios disponibles';
         container.innerHTML = '<p class="no-date-msg">Selecciona una fecha para ver los horarios disponibles.</p>';
         return;
     }
-    const jsDow  = selectedDate.getDay();
-    const clase  = claseActual();
-    // Filtrar solo los horarios del día elegido
-    const slots  = (clase?.horarios ?? []).filter(h => diasSemanaMap[h.dia_semana] === jsDow);
-    const dayStr = selectedDate.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' });
+
+    const clase    = claseActual();
+    const jsDow    = selectedDate.getDay();
+    const fStr     = fechaStr(selectedDate);
+    const { bloqueados } = getDisponibilidad();
+    const dayStr   = selectedDate.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' });
     title.textContent = `Horarios — ${cap(dayStr)}`;
-    if (!slots.length) {
+
+    // Slots recurrentes del día (si no está bloqueado)
+    const slotsRec = bloqueados.has(fStr)
+        ? []
+        : (clase?.horarios ?? []).filter(h => diasSemanaMap[h.dia_semana] === jsDow);
+
+    // Slots de fecha específica tipo 'extra' para esta fecha exacta
+    const slotsEsp = (clase?.horarios_especificos ?? [])
+        .filter(e => e.fecha === fStr && e.tipo === 'extra');
+
+    // Combinar (los específicos al final, marcados diferente)
+    if (!slotsRec.length && !slotsEsp.length) {
         container.innerHTML = '<p class="no-date-msg">No hay horarios para este día.</p>';
         return;
     }
-    container.innerHTML = `<div class="horario-slots">${
-        slots.map(h => {
-            const hora = h.hora.substring(0, 5);
-            const sel  = selectedHorario?.id === h.id;
-            return `<button class="slot ${sel ? 'selected' : ''}"
-                        onclick="selectHorario(${h.id},'${h.dia_semana}','${h.hora}')">
-                        ${hora}
-                    </button>`;
-        }).join('')
-    }</div>`;
+
+    const botonesRec = slotsRec.map(h => {
+        const hora = h.hora.substring(0, 5);
+        const sel  = selectedHorario?.id === h.id && !selectedHorario?.esEspecifico;
+        return `<button class="slot ${sel ? 'selected' : ''}"
+                    onclick="selectHorario(${h.id}, '${h.dia_semana}', '${h.hora}', false)">
+                    ${hora}
+                </button>`;
+    }).join('');
+
+    const botonesEsp = slotsEsp.map(e => {
+        const hora = e.hora.substring(0, 5);
+        const sel  = selectedHorario?.id === e.id && selectedHorario?.esEspecifico;
+        return `<button class="slot extra-slot ${sel ? 'selected' : ''}"
+                    onclick="selectHorario(${e.id}, '${fStr}', '${e.hora}', true)"
+                    title="Horario especial para este día">
+                    ${hora} ✦
+                </button>`;
+    }).join('');
+
+    container.innerHTML = `<div class="horario-slots">${botonesRec}${botonesEsp}</div>`;
+
+    if (slotsEsp.length) {
+        container.innerHTML += `<p style="font-size:.75rem;color:rgba(45,36,36,.45);margin-top:.6rem;">✦ Horario especial para esta fecha</p>`;
+    }
 }
 
-function selectHorario(id, dia, hora) {
-    selectedHorario = { id, dia_semana: dia, hora };
+function selectHorario(id, diaOFecha, hora, esEspecifico) {
+    selectedHorario = { id, diaOFecha, hora, esEspecifico };
     renderHorarios();
     updateNextBtn();
 }
 
 // ══════════════════════════════════════════════════════
-//  STEP 3 → API RESERVAS (POST api/reservas.php)
+//  STEP 3 → ENVIAR RESERVA
 // ══════════════════════════════════════════════════════
 async function enviarReserva() {
     const errorEl = document.getElementById('formError');
     errorEl.classList.remove('show');
 
     const payload = {
-        nombre:     document.getElementById('fNombre').value.trim(),
-        apellido:   document.getElementById('fApellidos').value.trim(),
-        correo:     document.getElementById('fEmail').value.trim(),
-        tel:        document.getElementById('fTelefono').value.trim(),
-        clase_id:   selectedClaseId,
-        horario_id: selectedHorario.id,
-        fecha:      selectedDate.toISOString().split('T')[0],   // YYYY-MM-DD
-        notas:      document.getElementById('fNotas').value.trim(),
+        nombre:            document.getElementById('fNombre').value.trim(),
+        apellido:          document.getElementById('fApellidos').value.trim(),
+        correo:            document.getElementById('fEmail').value.trim(),
+        tel:               document.getElementById('fTelefono').value.trim(),
+        clase_id:          selectedClaseId,
+        horario_id:        selectedHorario.id,
+        fecha:             fechaStr(selectedDate),
+        notas:             document.getElementById('fNotas').value.trim(),
+        nivel_musical:     document.getElementById('fNivel').value,
+        tiene_instrumento: document.getElementById('fInstrumento').value,
     };
 
-    // Estado "enviando" en el botón
     const btn = document.getElementById('btnNext');
     btn.disabled = true;
     btn.innerHTML = `<span class="spinner"></span> Enviando...`;
@@ -532,14 +641,12 @@ async function enviarReserva() {
         });
         const data = await res.json();
         if (!res.ok || data.error) throw new Error(data.error || `Error ${res.status}`);
-
-        // Éxito
         renderConfirm(data.reserva_id);
         goTo(4);
     } catch (err) {
         errorEl.textContent = `No se pudo completar la reserva: ${err.message}. Intenta de nuevo.`;
         errorEl.classList.add('show');
-        updateNextBtn();   // restaura el botón
+        updateNextBtn();
     }
 }
 
@@ -553,8 +660,8 @@ function renderConfirm(reservaId) {
         ? cap(selectedDate.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long', year:'numeric' }))
         : '—';
 
-    document.getElementById('cClase').textContent    = clase?.nombre    ?? '—';
-    document.getElementById('cProfesor').textContent = clase?.profesor  ?? '—';
+    document.getElementById('cClase').textContent    = clase?.nombre   ?? '—';
+    document.getElementById('cProfesor').textContent = clase?.profesor ?? '—';
     document.getElementById('cFecha').textContent    = dateStr;
     document.getElementById('cHora').textContent     = hora;
     document.getElementById('cDuracion').textContent = clase ? `${clase.duracion} min` : '—';

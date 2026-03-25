@@ -23,23 +23,36 @@ try {
     // ── GET ──────────────────────────────────
     if ($metodo === 'GET') {
         if ($id) {
-            // Una clase con sus horarios
+            // Una clase con sus horarios recurrentes y específicos
             $stmt = $pdo->prepare('SELECT * FROM clases WHERE id = ?');
             $stmt->execute([$id]);
             $clase = $stmt->fetch();
             if (!$clase) { http_response_code(404); echo json_encode(['error' => 'Clase no encontrada']); exit; }
 
+            // Horarios recurrentes
             $stmt2 = $pdo->prepare('SELECT id, dia_semana, hora FROM horarios WHERE clase_id = ? ORDER BY FIELD(dia_semana,"lunes","martes","miercoles","jueves","viernes","sabado","domingo"), hora');
             $stmt2->execute([$id]);
             $clase['horarios'] = $stmt2->fetchAll();
+
+            // Horarios específicos (solo desde hoy en adelante)
+            $stmt3 = $pdo->prepare('SELECT id, fecha, hora, tipo FROM horarios_especificos WHERE clase_id = ? AND fecha >= CURDATE() ORDER BY fecha ASC, hora ASC');
+            $stmt3->execute([$id]);
+            $clase['horarios_especificos'] = $stmt3->fetchAll();
+
             echo json_encode($clase);
         } else {
-            // Todas las clases con sus horarios
+            // Todas las clases con sus horarios recurrentes y específicos
             $clases = $pdo->query('SELECT * FROM clases ORDER BY nombre')->fetchAll();
             foreach ($clases as &$clase) {
+                // Horarios recurrentes
                 $stmt = $pdo->prepare('SELECT id, dia_semana, hora FROM horarios WHERE clase_id = ? ORDER BY FIELD(dia_semana,"lunes","martes","miercoles","jueves","viernes","sabado","domingo"), hora');
                 $stmt->execute([$clase['id']]);
                 $clase['horarios'] = $stmt->fetchAll();
+
+                // Horarios específicos (solo desde hoy en adelante)
+                $stmt2 = $pdo->prepare('SELECT id, fecha, hora, tipo FROM horarios_especificos WHERE clase_id = ? AND fecha >= CURDATE() ORDER BY fecha ASC, hora ASC');
+                $stmt2->execute([$clase['id']]);
+                $clase['horarios_especificos'] = $stmt2->fetchAll();
             }
             echo json_encode($clases);
         }
@@ -72,7 +85,7 @@ try {
         ]);
         $claseId = $pdo->lastInsertId();
 
-        // Insertar horarios
+        // Insertar horarios recurrentes
         if (!empty($datos['horarios']) && is_array($datos['horarios'])) {
             $stmtH = $pdo->prepare('INSERT INTO horarios (clase_id, dia_semana, hora) VALUES (?, ?, ?)');
             foreach ($datos['horarios'] as $h) {
@@ -119,7 +132,7 @@ try {
             ':id'          => $id,
         ]);
 
-        // Reemplazar horarios: borrar los viejos e insertar los nuevos
+        // Reemplazar horarios recurrentes: borrar los viejos e insertar los nuevos
         $pdo->prepare('DELETE FROM horarios WHERE clase_id = ?')->execute([$id]);
         if (!empty($datos['horarios']) && is_array($datos['horarios'])) {
             $stmtH = $pdo->prepare('INSERT INTO horarios (clase_id, dia_semana, hora) VALUES (?, ?, ?)');
@@ -130,13 +143,16 @@ try {
             }
         }
 
+        // Nota: los horarios específicos se manejan por separado
+        // desde api/horarios_especificos.php (POST para crear, DELETE para borrar)
+
         $pdo->commit();
         echo json_encode(['ok' => true]);
 
     // ── DELETE ───────────────────────────────
     } elseif ($metodo === 'DELETE') {
         if (!$id) { http_response_code(400); echo json_encode(['error' => 'Falta el id']); exit; }
-        // Los horarios se eliminan solos por CASCADE
+        // Los horarios recurrentes y específicos se eliminan por CASCADE
         $pdo->prepare('DELETE FROM clases WHERE id = ?')->execute([$id]);
         echo json_encode(['ok' => true]);
     }
