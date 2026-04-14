@@ -95,13 +95,25 @@ $anioActual = date("Y");
         }
         .btn-reserva:hover { background: #6B3410; }
 
-        @media (max-width: 768px) {
-            nav { display: none; }
-            header { padding: 1rem 1.25rem; }
-        }
+        /* ── HAMBURGER ── */
+        .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 0.4rem; z-index: 200; }
+        .hamburger span { display: block; width: 22px; height: 2px; background: var(--dark); border-radius: 2px; transition: transform 0.35s ease, opacity 0.25s ease; }
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .mobile-nav { display: none; position: fixed; inset: 0; z-index: 150; background: rgba(45,36,36,0.45); backdrop-filter: blur(2px); opacity: 0; transition: opacity 0.3s ease; }
+        .mobile-nav.open { opacity: 1; }
+        .mobile-nav-panel { position: absolute; top: 0; right: 0; height: 100%; width: min(80vw, 320px); background: var(--cream); padding: 5rem 2rem 2rem; transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; gap: 0.25rem; }
+        .mobile-nav.open .mobile-nav-panel { transform: translateX(0); }
+        .mobile-nav-panel a { display: block; padding: 0.85rem 0; font-size: 1.05rem; color: var(--dark); text-decoration: none; border-bottom: 1px solid var(--light); transition: color 0.2s; }
+        .mobile-nav-panel a:hover, .mobile-nav-panel a.active { color: var(--brown); }
+        .mobile-nav-panel .mobile-reserva { margin-top: 1.5rem; display: block; text-align: center; padding: 0.85rem 1.4rem; background: var(--brown); color: white; border-radius: 9999px; text-decoration: none; font-weight: 500; font-size: 0.875rem; letter-spacing: 0.05em; border-bottom: none; }
+        @media (max-width: 768px) { nav { display: none; } .btn-reserva { display: none; } .hamburger { display: flex; } header { padding: 1rem 1.25rem; } }
 
         /* ── HERO / MAIN GRID ── */
         .hero { padding: 5rem 2rem; }
+        @media (max-width: 768px) { .hero { padding: 3.5rem 1.5rem; } }
+        @media (max-width: 480px) { .hero { padding: 2.5rem 1.25rem; } }
         .hero-inner {
             max-width: 72rem;
             margin: 0 auto;
@@ -349,6 +361,7 @@ $anioActual = date("Y");
 
 <!-- HEADER -->
 <header>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menú" aria-expanded="false"><span></span><span></span><span></span></button>
     <a href="home.php" class="logo">
         <div class="logo-icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
@@ -368,6 +381,28 @@ $anioActual = date("Y");
     </nav>
     <a href="clases.php" class="btn-reserva">RESERVAR CLASE</a>
 </header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav" role="dialog" aria-modal="true" aria-label="Menú de navegación">
+    <div class="mobile-nav-panel">
+        <a href="home.php">Inicio</a>
+        <a href="clases.php">Clases</a>
+        <a href="eventos.php">Eventos</a>
+        <a href="contacto.php" class="active">Contacto</a>
+        <a href="clases.php" class="mobile-reserva">RESERVAR CLASE</a>
+    </div>
+</div>
+<script>
+(function(){
+    const btn = document.getElementById('hamburgerBtn');
+    const nav = document.getElementById('mobileNav');
+    function openMenu() { nav.style.display='block'; requestAnimationFrame(()=>nav.classList.add('open')); btn.classList.add('open'); btn.setAttribute('aria-expanded','true'); document.body.style.overflow='hidden'; }
+    function closeMenu() { nav.classList.remove('open'); btn.classList.remove('open'); btn.setAttribute('aria-expanded','false'); document.body.style.overflow=''; setTimeout(()=>{nav.style.display='none';},350); }
+    btn.addEventListener('click', () => btn.classList.contains('open') ? closeMenu() : openMenu());
+    nav.addEventListener('click', e => { if (e.target === nav) closeMenu(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+})();
+</script>
 
 <!-- HERO -->
 <section class="hero">

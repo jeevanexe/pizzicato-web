@@ -21,23 +21,49 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'inicio';
         }
         body { background:var(--light); font-family:'DM Sans',sans-serif; color:var(--dark); min-height:100vh; display:flex; flex-direction:column; }
 
+        /* ── TOPBAR ── */
         .topbar { position:sticky; top:0; z-index:200; background:var(--cream); border-bottom:1px solid var(--light); display:flex; align-items:center; justify-content:space-between; padding:.85rem 1.5rem; gap:1rem; }
-        .topbar-left { display:flex; align-items:center; gap:.75rem; }
-        .logo-icon { width:2.2rem; height:2.2rem; background:var(--brown); border-radius:.5rem; display:flex; align-items:center; justify-content:center; color:white; }
+        .topbar-left { display:flex; align-items:center; gap:.75rem; min-width:0; }
+        .logo-icon { width:2.2rem; height:2.2rem; background:var(--brown); border-radius:.5rem; display:flex; align-items:center; justify-content:center; color:white; flex-shrink:0; }
         .logo-icon svg { width:14px; height:14px; }
         .logo-text strong { font-family:'Playfair Display',serif; font-size:1.05rem; display:block; line-height:1.1; }
         .logo-text small { font-size:.6rem; color:rgba(45,36,36,.5); }
-        .topbar-divider { width:1px; height:1.5rem; background:var(--light); }
-        .topbar-section { font-size:.85rem; color:rgba(45,36,36,.5); }
-        .topbar-right { display:flex; align-items:center; gap:.75rem; }
-        .topbar-link { font-size:.8rem; color:rgba(45,36,36,.55); text-decoration:none; display:flex; align-items:center; gap:.35rem; transition:color .2s; }
+        .topbar-divider { width:1px; height:1.5rem; background:var(--light); flex-shrink:0; }
+        .topbar-section { font-size:.85rem; color:rgba(45,36,36,.5); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .topbar-right { display:flex; align-items:center; gap:.75rem; flex-shrink:0; }
+        .topbar-link { font-size:.8rem; color:rgba(45,36,36,.55); text-decoration:none; display:flex; align-items:center; gap:.35rem; transition:color .2s; white-space:nowrap; }
         .topbar-link:hover { color:var(--brown); }
         .topbar-link svg { width:14px; height:14px; }
-        .avatar { width:2rem; height:2rem; border-radius:50%; background:var(--brown); color:white; display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:500; cursor:pointer; }
+        .avatar { width:2rem; height:2rem; border-radius:50%; background:var(--brown); color:white; display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:500; cursor:pointer; flex-shrink:0; }
 
+        /* Sidebar toggle button (mobile only) */
+        .sidebar-toggle { display:none; background:none; border:none; cursor:pointer; padding:.3rem; color:var(--dark); flex-shrink:0; }
+        .sidebar-toggle svg { width:20px; height:20px; display:block; }
+        @media(max-width:768px) {
+            .sidebar-toggle { display:flex; align-items:center; justify-content:center; }
+            .topbar-divider { display:none; }
+            .topbar-section { display:none; }
+            .topbar-link .link-label { display:none; }
+            .topbar { padding:.75rem 1rem; }
+        }
+
+        /* ── LAYOUT ── */
         .dash-layout { display:flex; flex:1; min-height:calc(100vh - 57px); }
 
-        .sidebar { width:220px; flex-shrink:0; background:var(--cream); border-right:1px solid var(--light); display:flex; flex-direction:column; padding:1.25rem 0; position:sticky; top:57px; height:calc(100vh - 57px); overflow-y:auto; }
+        /* ── SIDEBAR ── */
+        .sidebar { width:220px; flex-shrink:0; background:var(--cream); border-right:1px solid var(--light); display:flex; flex-direction:column; padding:1.25rem 0; position:sticky; top:57px; height:calc(100vh - 57px); overflow-y:auto; transition:transform .3s cubic-bezier(.4,0,.2,1); }
+        /* Mobile sidebar overlay */
+        .sidebar-backdrop { display:none; position:fixed; inset:0; background:rgba(45,36,36,.45); z-index:299; backdrop-filter:blur(2px); opacity:0; transition:opacity .3s; }
+        .sidebar-backdrop.open { opacity:1; }
+        @media(max-width:768px) {
+            .sidebar { position:fixed; top:0; left:0; height:100vh; z-index:300; transform:translateX(-100%); }
+            .sidebar.open { transform:translateX(0); }
+            .sidebar-backdrop { display:block; }
+            .sidebar-backdrop.open { pointer-events:all; }
+        }
+        @media(min-width:769px) and (max-width:1024px) {
+            .sidebar { width:200px; }
+        }
         .nav-group-label { font-size:.65rem; font-weight:500; color:rgba(45,36,36,.4); text-transform:uppercase; letter-spacing:.12em; padding:0 1.25rem; margin-bottom:.35rem; margin-top:1rem; }
         .nav-group-label:first-child { margin-top:0; }
         .nav-item { display:flex; align-items:center; gap:.65rem; padding:.6rem 1.25rem; font-size:.875rem; color:rgba(45,36,36,.65); text-decoration:none; cursor:pointer; border-left:2px solid transparent; transition:all .2s; }
@@ -53,9 +79,13 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'inicio';
         .sidebar-user-info strong { font-size:.82rem; display:block; color:var(--dark); }
         .sidebar-user-info small { font-size:.7rem; color:rgba(45,36,36,.45); }
 
-        .content { flex:1; padding:2rem; overflow-y:auto; }
-        .sec-head { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:1.75rem; }
+        /* ── CONTENT ── */
+        .content { flex:1; padding:2rem; overflow-y:auto; min-width:0; }
+        @media(max-width:768px) { .content { padding:1.25rem 1rem; } }
+        @media(max-width:480px) { .content { padding:1rem .85rem; } }
+        .sec-head { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:1.75rem; flex-wrap:wrap; gap:.75rem; }
         .sec-head h1 { font-family:'Playfair Display',serif; font-size:1.75rem; color:var(--dark); }
+        @media(max-width:480px) { .sec-head h1 { font-size:1.4rem; } }
         .sec-head p { font-size:.875rem; color:rgba(45,36,36,.55); margin-top:.2rem; }
 
         .btn { display:inline-flex; align-items:center; gap:.4rem; padding:.6rem 1.2rem; border-radius:9999px; font-size:.8rem; font-weight:500; font-family:'DM Sans',sans-serif; cursor:pointer; border:none; letter-spacing:.04em; transition:all .2s; text-decoration:none; }
@@ -69,20 +99,29 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'inicio';
         .btn-sm { padding:.35rem .75rem; font-size:.75rem; }
         .btn:disabled { opacity:.5; cursor:not-allowed; }
 
+        /* ── STATS ── */
         .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem; }
         @media(max-width:900px){ .stats-grid { grid-template-columns:1fr 1fr; } }
+        @media(max-width:400px){ .stats-grid { grid-template-columns:1fr 1fr; gap:.65rem; } }
         .stat-card { background:white; border-radius:1rem; padding:1.25rem; border:1px solid rgba(245,230,211,.8); }
+        @media(max-width:480px){ .stat-card { padding:1rem .85rem; } }
         .stat-icon { width:2.25rem; height:2.25rem; border-radius:.6rem; background:var(--light); display:flex; align-items:center; justify-content:center; color:var(--brown); margin-bottom:.75rem; }
         .stat-icon svg { width:16px; height:16px; }
         .stat-label { font-size:.75rem; color:rgba(45,36,36,.5); margin-bottom:.25rem; }
         .stat-val { font-family:'Playfair Display',serif; font-size:1.85rem; color:var(--dark); line-height:1; }
+        @media(max-width:400px){ .stat-val { font-size:1.5rem; } .stat-label { font-size:.68rem; } }
 
-        .card { background:white; border-radius:1rem; border:1px solid rgba(245,230,211,.8); overflow:hidden; margin-bottom:1.5rem; }
-        .card-header { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.25rem; border-bottom:1px solid var(--light); }
+        .card { background:white; border-radius:1rem; border:1px solid rgba(245,230,211,.8); margin-bottom:1.5rem; }
+        .card-header { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.25rem; border-bottom:1px solid var(--light); gap:.5rem; flex-wrap:wrap; }
         .card-header h2 { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--dark); }
+        @media(max-width:480px) { .card-header { padding:.85rem 1rem; } .card-header h2 { font-size:1rem; } }
 
-        .tbl { width:100%; border-collapse:collapse; }
-        .tbl th { font-size:.7rem; font-weight:500; color:rgba(45,36,36,.45); text-transform:uppercase; letter-spacing:.1em; padding:.75rem 1.25rem; text-align:left; background:rgba(245,230,211,.3); border-bottom:1px solid var(--light); }
+        /* ── TABLES ── */
+        .tbl-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:0 0 1rem 1rem; }
+        .tbl { width:100%; border-collapse:collapse; min-width:700px; }
+        /* Compact tables (few columns, e.g. Inicio summary) — fit on mobile without scroll */
+        .tbl-compact { min-width:0; }
+        .tbl th { font-size:.7rem; font-weight:500; color:rgba(45,36,36,.45); text-transform:uppercase; letter-spacing:.1em; padding:.75rem 1.25rem; text-align:left; background:rgba(245,230,211,.3); border-bottom:1px solid var(--light); white-space:nowrap; }
         .tbl td { padding:.85rem 1.25rem; font-size:.875rem; border-bottom:1px solid rgba(245,230,211,.6); vertical-align:middle; }
         .tbl tr:last-child td { border-bottom:none; }
         .tbl tr:hover td { background:rgba(255,248,240,.7); }
@@ -150,7 +189,7 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'inicio';
         .img-label { position:absolute; bottom:0; left:0; right:0; background:rgba(45,36,36,.65); color:white; font-size:.65rem; padding:.25rem .5rem; text-align:center; }
 
         .two-col { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
-        @media(max-width:900px){ .two-col { grid-template-columns:1fr; } }
+        @media(max-width:900px){ .two-col { grid-template-columns:1fr; gap:1rem; } }
 
         .modal-overlay { position:fixed; inset:0; background:rgba(45,36,36,.5); z-index:500; display:none; align-items:center; justify-content:center; padding:1rem; }
         .modal-overlay.open { display:flex; }
@@ -211,6 +250,19 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'inicio';
         /* Fila no leída */
         .tbl tr.no-leido td { background:rgba(139,69,19,.03); }
         .tbl tr.no-leido td:first-child { border-left:3px solid var(--brown); }
+
+        /* ── MODAL RESPONSIVE ── */
+        @media(max-width:600px) {
+            .modal { border-radius:.75rem .75rem 0 0; max-height:95vh; }
+            .modal-overlay { align-items:flex-end; padding:0; }
+            .form-grid { grid-template-columns:1fr; }
+            .form-footer { flex-direction:column-reverse; }
+            .form-footer .btn { width:100%; justify-content:center; }
+            .mensaje-meta { grid-template-columns:1fr; }
+            .horario-row { flex-wrap:wrap; }
+            .especificos-add { flex-direction:column; align-items:stretch; }
+            .especificos-add input, .especificos-add select { width:100%; }
+        }
     </style>
 </head>
 <body>
@@ -218,6 +270,9 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'inicio';
 <!-- TOPBAR -->
 <div class="topbar">
     <div class="topbar-left">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Abrir menú">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
         <div class="logo-icon">
             <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
         </div>
@@ -231,18 +286,20 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'inicio';
     <div class="topbar-right">
         <a href="home.php" class="topbar-link" target="_blank">
             <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            Ver sitio
+            <span class="link-label">Ver sitio</span>
         </a>
         <a href="logout.php" class="topbar-link">
             <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            Cerrar sesión
+            <span class="link-label">Cerrar sesión</span>
         </a>
         <div class="avatar" title="Jhonatan Catalan">JC</div>
     </div>
 </div>
 
 <div class="dash-layout">
-    <aside class="sidebar">
+    <!-- Backdrop for mobile sidebar -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" style="display:none;"></div>
+    <aside class="sidebar" id="sidebar">
         <span class="nav-group-label">General</span>
         <a class="nav-item active" data-sec="inicio" onclick="goTo('inicio',this)">
             <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -313,11 +370,11 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'inicio';
             <div class="two-col">
                 <div class="card">
                     <div class="card-header"><h2>Clases recientes</h2><button class="btn btn-secondary btn-sm" onclick="goTo('clases',document.querySelector('[data-sec=clases]'))">Ver todas</button></div>
-                    <table class="tbl" id="tbl-inicio-clases"><tr><td class="tbl-loading">Cargando...</td></tr></table>
+                    <div class="tbl-wrap"><table class="tbl tbl-compact" id="tbl-inicio-clases"><tr><td class="tbl-loading">Cargando...</td></tr></table></div>
                 </div>
                 <div class="card">
                     <div class="card-header"><h2>Próximos eventos</h2><button class="btn btn-secondary btn-sm" onclick="goTo('eventos',document.querySelector('[data-sec=eventos]'))">Ver todos</button></div>
-                    <table class="tbl" id="tbl-inicio-eventos"><tr><td class="tbl-loading">Cargando...</td></tr></table>
+                    <div class="tbl-wrap"><table class="tbl tbl-compact" id="tbl-inicio-eventos"><tr><td class="tbl-loading">Cargando...</td></tr></table></div>
                 </div>
             </div>
         </div>
@@ -333,7 +390,7 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'inicio';
             </div>
             <div class="card">
                 <div class="card-header"><h2>Todas las clases</h2></div>
-                <table class="tbl" id="tbl-clases"><tr><td class="tbl-loading">Cargando...</td></tr></table>
+                <div class="tbl-wrap"><table class="tbl" id="tbl-clases"><tr><td class="tbl-loading">Cargando...</td></tr></table></div>
             </div>
         </div>
 
@@ -348,7 +405,7 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'inicio';
             </div>
             <div class="card">
                 <div class="card-header"><h2>Todos los eventos</h2></div>
-                <table class="tbl" id="tbl-eventos"><tr><td class="tbl-loading">Cargando...</td></tr></table>
+                <div class="tbl-wrap"><table class="tbl" id="tbl-eventos"><tr><td class="tbl-loading">Cargando...</td></tr></table></div>
             </div>
         </div>
 
@@ -410,7 +467,7 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'inicio';
                     <h2>Reservas</h2>
                     <span style="font-size:.8rem;color:rgba(45,36,36,.4);" id="reservas-count"></span>
                 </div>
-                <table class="tbl" id="tbl-reservas"><tr><td class="tbl-loading">Cargando...</td></tr></table>
+                <div class="tbl-wrap"><table class="tbl" id="tbl-reservas"><tr><td class="tbl-loading">Cargando...</td></tr></table></div>
             </div>
         </div>
 
@@ -425,7 +482,7 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'inicio';
                     <h2>Todos los mensajes</h2>
                     <span style="font-size:.8rem;color:rgba(45,36,36,.4);" id="mensajes-count"></span>
                 </div>
-                <table class="tbl" id="tbl-mensajes"><tr><td class="tbl-loading">Cargando...</td></tr></table>
+                <div class="tbl-wrap"><table class="tbl" id="tbl-mensajes"><tr><td class="tbl-loading">Cargando...</td></tr></table></div>
             </div>
         </div>
 
@@ -609,6 +666,8 @@ function goTo(sec, el) {
     if (el) el.classList.add('active');
     const titulos = { inicio:'Panel de administración', clases:'Gestión de Clases', eventos:'Gestión de Eventos', imagenes:'Biblioteca de Imágenes', reservas:'Reservas', mensajes:'Mensajes de Contacto' };
     document.getElementById('topbarSection').textContent = titulos[sec] || '';
+    // Close sidebar on mobile after navigating
+    if (window.innerWidth <= 768) closeSidebar();
 }
 
 async function cargarTodo() {
@@ -1111,6 +1170,33 @@ function quitarPreview(inputId, imgId, wrapId) {
 }
 
 cargarTodo();
+
+// ── SIDEBAR TOGGLE (mobile) ──────────────────────────────
+(function () {
+    const sidebar  = document.getElementById('sidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    const toggle   = document.getElementById('sidebarToggle');
+
+    function openSidebar() {
+        sidebar.classList.add('open');
+        backdrop.style.display = 'block';
+        requestAnimationFrame(() => backdrop.classList.add('open'));
+        document.body.style.overflow = 'hidden';
+    }
+
+    window.closeSidebar = function () {
+        sidebar.classList.remove('open');
+        backdrop.classList.remove('open');
+        document.body.style.overflow = '';
+        setTimeout(() => { backdrop.style.display = 'none'; }, 320);
+    };
+
+    toggle.addEventListener('click', () => {
+        sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+    });
+    backdrop.addEventListener('click', closeSidebar);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+})();
 </script>
 
 <!-- ══ MODAL BIBLIOTECA PICKER ══ -->
