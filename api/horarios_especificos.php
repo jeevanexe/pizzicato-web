@@ -5,12 +5,14 @@ header('Access-Control-Allow-Methods: GET, POST, DELETE');
 header('Access-Control-Allow-Headers: Content-Type');
 
 require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/api_auth.php';
 $metodo = $_SERVER['REQUEST_METHOD'];
 $id     = isset($_GET['id']) ? intval($_GET['id']) : null;
 $pdo    = getDB();
 
 try {
     if ($metodo === 'POST') {
+        requireAdminAuth();
         $datos = json_decode(file_get_contents('php://input'), true);
         if (empty($datos['clase_id']) || empty($datos['fecha']) || empty($datos['hora'])) {
             http_response_code(400);
@@ -30,6 +32,7 @@ try {
         echo json_encode(['ok' => true, 'id' => $pdo->lastInsertId()]);
 
     } elseif ($metodo === 'DELETE') {
+        requireAdminAuth();
         if (!$id) { http_response_code(400); echo json_encode(['error' => 'Falta el id']); exit; }
         $pdo->prepare('DELETE FROM horarios_especificos WHERE id = ?')->execute([$id]);
         echo json_encode(['ok' => true]);

@@ -1,10 +1,27 @@
 <?php
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'domain' => '',
+    'secure' => isset($_SERVER['HTTPS']), // Only secure if using HTTPS
+    'httponly' => true,
+    'samesite' => 'Strict'
+]);
 session_start();
+
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin') {
     header('Location: dashboard.php'); exit;
 }
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die('Token CSRF inválido.');
+    }
+
     require_once 'db.php';
     $pdo  = getDB();
     $stmt = $pdo->prepare('SELECT id, nombre, contrasena, rol FROM usuarios WHERE correo = ?');
@@ -12,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $stmt->fetch();
 
     if ($user && password_verify($_POST['contrasena'], $user['contrasena']) && $user['rol'] === 'admin') {
+        session_regenerate_id(true); // Prevent Session Fixation
         $_SESSION['usuario_id'] = $user['id'];
         $_SESSION['nombre']     = $user['nombre'];
         $_SESSION['rol']        = $user['rol'];
@@ -53,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="error"><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>
     <form method="POST">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
         <label>Correo electrónico</label>
         <input type="email" name="correo" required autofocus>
         <label>Contraseña</label>

@@ -5,10 +5,24 @@
 //  require_once __DIR__ . '/db.php';
 // =============================================
 
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'pizzicato');
-define('DB_USER', 'root');       // En XAMPP el usuario es "root"
-define('DB_PASS', '');           // En XAMPP la contraseña está vacía por defecto
+// Simple .env parser for loading credentials
+$envFile = __DIR__ . '/.env';
+if (file_exists($envFile)) {
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        if (strpos($line, '=') !== false) {
+            list($name, $value) = explode('=', $line, 2);
+            $_ENV[trim($name)] = trim($value);
+        }
+    }
+}
+
+// Cargar credenciales desde .env, con valores por defecto para XAMPP
+define('DB_HOST', $_ENV['DB_HOST'] ?? 'localhost');
+define('DB_NAME', $_ENV['DB_NAME'] ?? 'pizzicato');
+define('DB_USER', $_ENV['DB_USER'] ?? 'root');
+define('DB_PASS', $_ENV['DB_PASS'] ?? '');
 define('DB_CHARSET', 'utf8mb4');
 
 function getDB(): PDO {

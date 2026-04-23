@@ -1,2 +1,17 @@
 DirectoryIndex home.php index.php index.html
 
+Options -Indexes
+RewriteEngine On
+
+# Remove .php extension from URL
+# If the request is not for a real file or directory
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# Rewrite /pagename to /pagename.php internally
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+# Redirect /pagename.php to /pagename (hide the extension in the browser)
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L,NE]
+
+
