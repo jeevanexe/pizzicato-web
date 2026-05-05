@@ -402,8 +402,8 @@ $claseIdParam = isset($_GET['clase']) ? intval($_GET['clase']) : 0;
 // ══════════════════════════════════════════════════════
 //  CONFIGURACIÓN
 // ══════════════════════════════════════════════════════
-const API_CLASES   = 'api/clases.php';
-const API_RESERVAS = 'api/reservas.php';
+const API_CLASES   = 'api/clases';
+const API_RESERVAS = 'api/reservas';
 
 // ══════════════════════════════════════════════════════
 //  ESTADO

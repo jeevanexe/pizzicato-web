@@ -573,7 +573,7 @@ form.addEventListener('submit', async (e) => {
     submitBtn.innerHTML = `<div class="spinner"></div> Enviando...`;
 
     try {
-        const res  = await fetch('api/contacto.php', {
+        const res  = await fetch('api/contacto', {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
