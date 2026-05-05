@@ -627,12 +627,12 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'inicio';
 
 <script>
 const API = {
-    clases:              'api/clases.php',
-    eventos:             'api/eventos.php',
-    imagenes:            'api/imagenes.php',
-    reservas:            'api/reservas.php',
-    horariosEspecificos: 'api/horarios_especificos.php',
-    mensajes:            'api/contacto.php',
+    clases:              'api/clases',
+    eventos:             'api/eventos',
+    imagenes:            'api/imagenes',
+    reservas:            'api/reservas',
+    horariosEspecificos: 'api/horarios_especificos',
+    mensajes:            'api/contacto',
 };
 
 let _clases   = [], _eventos  = [], _imagenes = [], _reservas = [], _mensajes = [];
